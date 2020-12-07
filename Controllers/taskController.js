@@ -10,7 +10,7 @@ async function getTasks(req, res) {
     } else {
         results = await taskModel.getAllTasks(db);
     }
-    return res.json({"success": "true", "message": "got tasks from db", "data": results});
+    return res.json({"success": true, "message": "got tasks from db", "data": results});
 }
 
 async function addTask(req, res) {
@@ -21,13 +21,13 @@ async function addTask(req, res) {
             throw "empty"
         }
         const result = await taskModel.insertNewTask(db, newTask);
-        if (result.insertedCount === 1) {
-            res.json({"success": "true", "message": "new task added to db", "data": []});
+        if (result.insertedCount) {
+            res.json({"success": true, "message": "new task added to db", "data": []});
         } else {
-            res.json({"success": "false", "message": "error, couldn't add task to db", "data": []});
+            res.json({"success": false, "message": "error, couldn't add task to db", "data": []});
         }
     } catch (e) {
-        res.json({"success": "false", "message": "error, couldn't find new task name", "data": []});
+        res.json({"success": false, "message": "error, couldn't find new task name", "data": []});
     }
 }
 
@@ -36,13 +36,14 @@ async function markAsComplete(req, res) {
     const db = await dbConnector();
     try {
         const result = await taskModel.markTaskAsComplete(db, taskId);
+        console.log(result)
         if (result.modifiedCount) {
-            res.json({"success": "true", "message": "task marked as complete", "data": []});
+            res.json({"success": true, "message": "task marked as complete", "data": []});
         } else {
-            res.json({"success": "false", "message": "error, couldn't mark task as complete", "data": []});
+            res.json({"success": false, "message": "error, couldn't mark task as complete", "data": []});
         }
     } catch (e) {
-        res.json({"success": "false", "message": "error, incorrect task id given", "data": []});
+        res.json({"success": false, "message": "error, incorrect task id given", "data": []});
     }
 }
 
@@ -52,12 +53,12 @@ async function deleteTask(req, res) {
         try {
             const result = await taskModel.markTaskAsDeleted(db, taskId);
             if (result.modifiedCount) {
-                res.json({"success": "true", "message": "task marked as deleted", "data": []});
+                res.json({"success": true, "message": "task marked as deleted", "data": []});
             } else {
-                res.json({"success": "false", "message": "error, couldn't mark task as deleted", "data": []});
+                res.json({"success": false, "message": "error, couldn't mark task as deleted", "data": []});
             }
         } catch (e) {
-            res.json({"success": "false", "message": "error, incorrect task id given", "data": []});
+            res.json({"success": false, "message": "error, incorrect task id given", "data": []});
         }
 }
 

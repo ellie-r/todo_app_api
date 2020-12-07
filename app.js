@@ -5,8 +5,8 @@ const jsonParser = bodyParser.json();
 const taskController = require('./Controllers/taskController.js')
 const cors = require('cors');
 
-app.use(cors({origin: '*'}));
-app.options('*', cors({origin: '*'}));
+app.use(cors({origin: '*', optionsSuccessStatus: 200}));
+app.options('*', cors({origin: '*', optionsSuccessStatus: 200}));
 
 //display all or completed tasks
 app.get('/task', taskController.getTasks);
