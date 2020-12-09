@@ -11,8 +11,8 @@ async function getTasks(req, res) {
         } else {
             results = await taskModel.getAllTasks(db);
         }
-            return res.status(200).json({"success": true, "message": "got tasks from db", "data": results});
-        } catch (e) {
+        return res.status(200).json({"success": true, "message": "got tasks from db", "data": results});
+    } catch (e) {
         return res.status(500).json({"success": false, "message": "couldn't find tasks", "data": []});
     }
 }
