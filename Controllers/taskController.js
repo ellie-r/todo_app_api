@@ -5,12 +5,16 @@ const taskModel = require('../Model/taskModel.js');
 async function getTasks(req, res) {
     const db = await dbConnector();
     let results;
-    if (req.query.completed) {
-        results = await taskModel.getCompletedTasks(db);
-    } else {
-        results = await taskModel.getAllTasks(db);
+    try {
+        if (req.query.completed) {
+            results = await taskModel.getCompletedTasks(db);
+        } else {
+            results = await taskModel.getAllTasks(db);
+        }
+            return res.status(200).json({"success": true, "message": "got tasks from db", "data": results});
+        } catch (e) {
+        return res.status(500).json({"success": false, "message": "couldn't find tasks", "data": []});
     }
-    return res.json({"success": true, "message": "got tasks from db", "data": results});
 }
 
 async function addTask(req, res) {
@@ -22,12 +26,12 @@ async function addTask(req, res) {
         }
         const result = await taskModel.insertNewTask(db, newTask);
         if (result.insertedCount) {
-            res.json({"success": true, "message": "new task added to db", "data": []});
+            res.status(200).json({"success": true, "message": "new task added to db", "data": []});
         } else {
-            res.json({"success": false, "message": "error, couldn't add task to db", "data": []});
+            res.status(500).json({"success": false, "message": "error, couldn't add task to db", "data": []});
         }
     } catch (e) {
-        res.json({"success": false, "message": "error, couldn't find new task name", "data": []});
+        res.status(400).json({"success": false, "message": "error, couldn't find new task name", "data": []});
     }
 }
 
@@ -36,14 +40,13 @@ async function markAsComplete(req, res) {
     const db = await dbConnector();
     try {
         const result = await taskModel.markTaskAsComplete(db, taskId);
-        console.log(result)
         if (result.modifiedCount) {
-            res.json({"success": true, "message": "task marked as complete", "data": []});
+            res.status(200).json({"success": true, "message": "task marked as complete", "data": []});
         } else {
-            res.json({"success": false, "message": "error, couldn't mark task as complete", "data": []});
+            res.status(500).json({"success": false, "message": "error, couldn't mark task as complete", "data": []});
         }
     } catch (e) {
-        res.json({"success": false, "message": "error, incorrect task id given", "data": []});
+        res.status(400).json({"success": false, "message": "error, incorrect task id given", "data": []});
     }
 }
 
@@ -53,12 +56,12 @@ async function deleteTask(req, res) {
         try {
             const result = await taskModel.markTaskAsDeleted(db, taskId);
             if (result.modifiedCount) {
-                res.json({"success": true, "message": "task marked as deleted", "data": []});
+                res.status(200).json({"success": true, "message": "task marked as deleted", "data": []});
             } else {
-                res.json({"success": false, "message": "error, couldn't mark task as deleted", "data": []});
+                res.status(500).json({"success": false, "message": "error, couldn't mark task as deleted", "data": []});
             }
         } catch (e) {
-            res.json({"success": false, "message": "error, incorrect task id given", "data": []});
+            res.status(400).json({"success": false, "message": "error, incorrect task id given", "data": []});
         }
 }
 
